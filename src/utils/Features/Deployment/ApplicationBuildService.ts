@@ -1,8 +1,5 @@
 import { Dir } from "./IDirsAndFiles";
 import { WebContainerService } from "./WebContainerService";
-import * as JSZip from 'jszip';
-import * as FileSaver from 'file-saver';
-
 
 export class ApplicationBuildService extends WebContainerService{
 
@@ -10,6 +7,7 @@ export class ApplicationBuildService extends WebContainerService{
 
     public async Build(){
         
+        const FileSaver = require('file-saver');
         let result = null;
         await this.boot();
         
@@ -32,6 +30,7 @@ export class ApplicationBuildService extends WebContainerService{
         
     }
     private async CreateZip(dirx: Dir){
+        const JSZip = require('jszip');
         const zip = new JSZip();
 
         for(const dir of dirx.subDirs){
