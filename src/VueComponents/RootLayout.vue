@@ -82,17 +82,13 @@ const props = defineProps({
 
 
 if(typeof process == 'undefined'){
-        tabService =BaseServiceProvider.ServiceWithContext<TabService>('TabService', 1)
-        tabService.SetNavigationHandler(Handler)
+        tabService = BaseServiceProvider.ServiceWithContext<TabService>('TabService', 1)
+       
 }else if(process.server == false){
     tabService =BaseServiceProvider.ServiceWithContext<TabService>('TabService', 1)
-        tabService.SetNavigationHandler(Handler)
+       
 }
 
-async function Handler(tab) {
-        
-        await navigateTo(tab)
-}
 
 async function HandleTabChange(tab){
     if(tab != tabService.ActiveTab.value.title){
