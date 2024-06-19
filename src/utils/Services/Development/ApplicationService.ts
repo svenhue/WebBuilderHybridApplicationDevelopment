@@ -61,7 +61,7 @@ export class ApplicationService extends BaseServiceProvider{
         config = this.InitializeApplication(config)
         config = this.dataAdapter.Create(config);
       
-        this.tabService.AddAndOpenTab({title: "App:" + config.name,path: `appdevelopment/${config.name}`})
+        this.tabService.AddAndOpenTab({title: "App:" + config.name,path: `appdevelopment/development/${config.name}`})
         return config;
     }
 

@@ -20,7 +20,7 @@
             <div :style="{zIndex:'99999', backgroundColor: 'white', color: 'black' }">
                     <q-tabs dense :model-value="tabService.ActiveTab.value.title"  align="left" active-color="primary"
                     
-                    @update:model-value="HandleTabChange"
+                 
                     indicator-color="primary"          
                 narrow-indicator>
                         <q-tab
@@ -48,7 +48,7 @@
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
-          @navigate="navigateTo(link)"
+        
         />
       </q-list>
     </q-drawer>
@@ -88,7 +88,6 @@ if(typeof process == 'undefined'){
     tabService =BaseServiceProvider.ServiceWithContext<TabService>('TabService', 1)
        
 }
-
 
 async function HandleTabChange(tab){
     if(tab != tabService.ActiveTab.value.title){

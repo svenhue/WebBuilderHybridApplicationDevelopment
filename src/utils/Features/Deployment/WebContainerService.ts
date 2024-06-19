@@ -18,9 +18,7 @@ export class WebContainerService{
 
         const api = new StartUp();
 
-        window.addEventListener('load', async() => {
-            
-        })
+
         const env = new BuildEnvironment();
 
         const container = await api.Boot();

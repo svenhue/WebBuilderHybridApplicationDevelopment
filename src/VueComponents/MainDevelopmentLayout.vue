@@ -8,7 +8,10 @@
         
         <q-page-container id="development-container" ref="container"
         >
-            <NuxtPage :contextid="contextid"></NuxtPage>
+            <q-page :style="{}">  
+                <NuxtPage :contextid="contextid"></NuxtPage>
+
+            </q-page>
         </q-page-container>
     
     </q-layout>

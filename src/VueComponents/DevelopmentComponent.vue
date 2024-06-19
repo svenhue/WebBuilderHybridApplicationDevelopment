@@ -1,5 +1,6 @@
 
 <template>
+    <q-layout>
     <div class="development-root-component">
         <LeftDevelopmentOptionsBar 
         ref="leftBar"
@@ -104,6 +105,7 @@
 
         </div>
     </div>
+</q-layout>
 </template>
 
 <script setup lang="ts">   

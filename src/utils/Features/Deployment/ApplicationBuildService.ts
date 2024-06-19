@@ -1,13 +1,14 @@
 import { Dir } from "./IDirsAndFiles";
 import { WebContainerService } from "./WebContainerService";
-
+import FileSaver from 'file-saver';
+import JSZip from 'jszip';
 export class ApplicationBuildService extends WebContainerService{
 
     private readonly _buildOutputDirectory: string = './.output';
 
     public async Build(){
         
-        const FileSaver = require('file-saver');
+       
         let result = null;
         await this.boot();
         
