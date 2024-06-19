@@ -36,9 +36,9 @@ import { BaseServiceProvider, IApplicationConfiguration, IDataAdapter, IHTTPClie
 import { TemplateDto } from './TemplateDto';
 import { UITemplateTypes } from './UITemplateTypes';
 import { interfaces} from 'inversify';
-import JsonEditor from 'jsoneditor';
+import * as JsonEditor from 'jsoneditor';
 import { QUploader, useQuasar } from 'quasar';
-import { FocussedViewContextService } from '../../../../utils/Services/Designer/FocussedViewContextService';
+import { FocussedViewContextService } from 'alphautils';
 const props = defineProps({
     contextid: {
         type: Number,

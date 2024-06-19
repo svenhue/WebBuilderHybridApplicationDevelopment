@@ -1,7 +1,7 @@
 import { Dir } from "./IDirsAndFiles";
 import { WebContainerService } from "./WebContainerService";
-import JSZip from 'jszip';
-import FileSaver from 'file-saver';
+import * as JSZip from 'jszip';
+import * as FileSaver from 'file-saver';
 
 
 export class ApplicationBuildService extends WebContainerService{
