@@ -9,7 +9,7 @@
             v-if="focussedView != undefined"
             size dense dense-toggle 
             :style="styleFocussed"  
-            class="f-component-options"
+            class="f-component-options component-options-position"
             header-class="f-component-options-header" 
             
             :label="focussedView?.tag.substring(focussedView?.tag.lastIndexOf(':')+ 1)">
@@ -26,7 +26,7 @@
             </q-expansion-item>
         </div>
 
-        <div :style="styleHovered" v-if="hoveredView != undefined && showHovered == true" class="f-component-options-hovered">
+        <div :style="styleHovered" v-if="hoveredView != undefined && showHovered == true" class="f-component-options-hovered" id="focussed-helper">
             <div>
                 {{ hoveredView?.tag.substring(hoveredView?.tag.lastIndexOf(':')+ 1)  }}
             </div>
@@ -64,7 +64,8 @@ const styleHovered = reactive({
     position: 'absolute',
     left: '0px',
     top: '0px',
-    zIndex: 99
+    zIndex: 99,
+    display: 'none' // dont needed yet
 }) 
 
 watch(focussedView, (newVal) => {
@@ -129,6 +130,10 @@ function SetPosition(view: IViewConfiguration, hovered = false){
 </script>
 
 <style scoped lang="scss">
+
+.component-options-position{
+    margin-top: -40px;
+}
 
 .f-component-options{
     position: absolute;

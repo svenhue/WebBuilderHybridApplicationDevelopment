@@ -26,7 +26,7 @@ export class ViewElementFactory {
     //todo add viewtemplate by bo container, remove need for template store
     this.templates.push(...templates)
   }
-  public createNode(type: string, node: IViewConfiguration, parentId: number, template?: IViewConfiguration) {
+  public createNode(type: string, node: IViewConfiguration, parentId: number, template?: boolean) {
     
     if(node == undefined){
       node = {} as IViewConfiguration;
@@ -36,8 +36,17 @@ export class ViewElementFactory {
         node = deepcopy(node, JSON.parse(JSON.stringify(this.viewdefinitions.find((t) => t.type == type))));
       }
     }
-    console.log(type, node, template)
     
+    if(template == true && node.skipTemplate != true){
+      if(type != undefined){
+        const specifictype = type.replace('viewdefinition:', '');
+        const templateNode = this.templates.find(t => t.type.includes(specifictype) && t.type.includes('viewtemplate')) 
+        if(templateNode != undefined){
+          node = deepcopy(node, JSON.parse(JSON.stringify(templateNode)))
+        }
+      }
+    }
+  
     if (node?.specifications?.atomic == true) {
         node.htmlattributes['data-atomic'] = true;
     }
@@ -63,7 +72,7 @@ export class ViewElementFactory {
     if (node.children != undefined) {
       let newNode = {} as IViewConfiguration;
       for (const child of node.children.filter(c => c.type != 'childrenCollection' && c.type != 'childrenCollection:templatePlaceholder')) {
-        newNode  = this.createNode(child.type, child, node.id);
+        newNode  = this.createNode(child.type, child, node.id, template);
         
         this.views.push(newNode);
 
@@ -116,10 +125,10 @@ export class ViewElementFactory {
     type?: string,
     values?: IViewConfiguration,
     parentid?: number,
-    template?: IViewConfiguration,
+    useTemplateDeclarative?: boolean,
     ): Array<IViewConfiguration>{
       this.views = [];
-      const node = this.createNode(type, values, parentid, template);
+      const node = this.createNode(type, values, parentid, useTemplateDeclarative);
       this.views.push(node);
       
       for(const view in this.views){

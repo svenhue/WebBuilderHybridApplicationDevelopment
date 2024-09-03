@@ -1,7 +1,7 @@
 
 <template>
     <q-layout>
-    <div class="development-root-component">
+    <div class="development-root-component" id="XXX" ref="XXX">
         <LeftDevelopmentOptionsBar 
         ref="leftBar"
         :contextid="viewModel.currentPage.value"
@@ -11,11 +11,14 @@
             
         </LeftDevelopmentOptionsBar>
         <Teleport :to="'body'">
-        
-        <DeploymentComponent>
+            <TreePathComponent
+        @focus-view="(id) => viewModel.focusView(id, true)">
+            
+        </TreePathComponent>
+            <DeploymentComponent>
 
-        </DeploymentComponent>
-    </Teleport>
+            </DeploymentComponent>
+        </Teleport>
         <div
      
         class="component-navigation-wrapper"
@@ -46,12 +49,12 @@
             <ApplicationDevelopmentToolbar :contextid="viewModel.currentPage.value" :route="useRoute()">
 
             </ApplicationDevelopmentToolbar>
-            <BackgroundFacadeComponent ref="facade" v-if="viewModel.currentPage.value != -1" class="appbase">
+            <div class="app-container">
+            <BackgroundFacadeComponent class="appbase"ref="facade" v-if="viewModel.currentPage.value != -1"  id="development-container">
                 <template #default>
                     <div :style="{
                         width: '100%',
                         height: '100%',
-                       
                        zIndex: 10
                     }">
                         <div
@@ -81,6 +84,8 @@
                     Oops! Nothing to see here. Please select a page to start developing.
                 </div>
             </div>
+        </div>
+            
        
             </div>
         </div>
@@ -90,10 +95,7 @@
 
         </FocussedViewOptionsComponent>
 
-        <TreePathComponent
-        @focus-view="(id) => viewModel.focusView(id, true)">
-            
-        </TreePathComponent>
+        
         <DevelopmentContextBarComponent
         :contextid="viewModel.currentPage.value"
         :element="viewModel.GetFocussedElement().value"
@@ -110,7 +112,7 @@
 
 <script setup lang="ts">   
 //@ts-ignore 
-import { defineExpose, ref, computed } from 'vue';
+import { defineExpose, ref, computed, Ref } from 'vue';
 import { useRoute } from 'vue-router'
 import { RunTimeVueApplicationViewModel } from '../ViewModels/RuntimeVueApplicationViewModel'
 import TreePathComponent from './ApplicationDevelopment/TreePathComponent.vue';
@@ -128,9 +130,9 @@ const optionsBar = ref(true)
 const facade = ref(null)
 const leftBar = ref(null)
 const route = useRoute()
-
+const XXX = ref<HTMLElement>(null)
 const solutionname = route.params.appName
-console.log(solutionname)
+
 const viewModel = new RunTimeVueApplicationViewModel(solutionname, facade)
 
 const positioningHelper = new ViewPositioningHelper(viewModel)
@@ -183,6 +185,15 @@ const buttonStyle = computed(() => {
     }
 })
 
+const height = computed(() => {
+    const el = XXX.value
+
+    if(el == undefined){
+        return "80%"
+    }
+        console.log(el.offsetHeight)
+    return el.offsetHeight - 136 + 'px'
+})
 defineExpose({
        
         deleteFocussedView: () => viewModel.deleteFocussedView()
@@ -193,14 +204,17 @@ defineExpose({
 
 <style scoped lang="scss">
 .development-root-component{
-
+   
+    position: absolute;
     width: 100%;
     height: 100%;
-
+    display:flex;
+    
     .component-navigation-wrapper{
         width: 100%;
         height: 100%;
-
+        
+        
         .component-wrapper{
             position: relative;
             width: 100%;
@@ -208,6 +222,24 @@ defineExpose({
           
             justify-content: center;
         }
+        .app-container{
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            position: absolute;
+            width:80%;
+            height:v-bind(height);
+           
+
+            .appbase{
+                position: inherit;
+                left: 50%;
+                transform: translate(-50%);
+                
+            
+        }
+        }
+        
     }
 
 }

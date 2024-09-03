@@ -1,20 +1,8 @@
 <template>
-    <q-layout class="main-development-layout" :style="{minHeight: '100px'}">
         <div class="layout-placeholder"    id="XXX">
 
         </div>
   
-
-        
-        <q-page-container id="development-container" ref="container"
-        >
-            <q-page :style="{}">  
-                <NuxtPage :contextid="contextid"></NuxtPage>
-
-            </q-page>
-        </q-page-container>
-    
-    </q-layout>
 </template>
 
 <script setup lang="ts">
@@ -43,7 +31,7 @@ function deleteFocussedView(){
 <style lang="scss">
 .main-development-layout{
     width: 100%;
-    height: 100%;
+  
     position: absolute;
    
     overflow: clip;
@@ -57,7 +45,7 @@ function deleteFocussedView(){
     }
     #development-container{
         width: 100%;
-        height: 100%;
+     
         margin-left: 42px;
         overflow: clip;
     }

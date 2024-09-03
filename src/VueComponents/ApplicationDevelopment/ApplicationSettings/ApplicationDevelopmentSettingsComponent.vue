@@ -1,9 +1,18 @@
 <template>
 
     <div>
-        <q-checkbox :label="'Show Dotted Element Borders'" v-model="service.showDevBorders.value" @update:model-value="(val) => service.ChangeDevBorderSetting(val)">
+        <q-list>
+            <q-item>
+            <q-checkbox :label="'Show Dotted Element Borders'" v-model="service.showDevBorders.value" @update:model-value="(val) => service.ChangeDevBorderSetting(val)">
 
-        </q-checkbox>
+            </q-checkbox>
+        </q-item>
+        <q-item>
+            <q-checkbox label="Use default component templates" v-model="service.useViewTemplates.value" @update:model-value="(val) => service.ChangeTemplateSetting()">
+
+            </q-checkbox>
+        </q-item>
+        </q-list>
     </div>
 </template>
 

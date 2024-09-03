@@ -2,14 +2,19 @@ import { StartUp } from "webcontainer";
 import { BuildEnvironment } from "webcontainer";  
 import { files }  from './files'
 import { Ref, ref } from "vue";
+import { Dir } from "./IDirsAndFiles";
 
 
 export class WebContainerService{
+
+    private readonly _rootDir: string = ''
+
 
     public env: BuildEnvironment
     public api: StartUp
     public isReady: Ref<boolean> = ref(false);
     
+
     public async boot(){
 
         if(this.api != undefined){
@@ -77,5 +82,39 @@ export class WebContainerService{
         return el;
     }
 
+    public async GetRootDirectory(): Promise<Dir>{
+        
+        const result = await copyDirOrFile(this._rootDir, this)
 
+        async function copyDirOrFile(dirPath, self: WebContainerService){
+
+            const dirFn = await self.api.containerInstance.fs.readdir(dirPath)
+
+            const rootDir: Dir = {name: dirPath, files: [], subDirs: []}
+
+                for(const dirOrFile of dirFn){  
+                    let isDir = true
+                    let file;
+                    
+                    try{
+                        file = await self.api.containerInstance.fs.readdir(dirPath + '/' + dirOrFile)
+                        
+                    }catch(e){
+                        isDir = false
+                    }
+                    if(!isDir){
+                        file = self.api.containerInstance.fs.readFile(dirPath + '/' + dirOrFile, "utf8")
+                        
+                        rootDir.files.push({value:file, name: dirOrFile})
+                    }else{
+                        
+                        const newDir = await copyDirOrFile(dirPath + '/' + dirOrFile, self)
+                        rootDir.subDirs.push(newDir)
+                    }
+                }
+                return rootDir;
+        }
+        return result;
+        
+    }
 }

@@ -10,7 +10,7 @@ export class ApplicationDevelopmentSettingsService{
 
     constructor(){
         this.showDevBorders = ref(true);
-        this.useViewTemplates = ref(false);
+        this.useViewTemplates = ref(true);
     }
 
 
@@ -28,9 +28,11 @@ export class ApplicationDevelopmentSettingsService{
         }
     }
 
-
+    public ChangeTemplateSetting(){
+        this.useViewTemplates.value != this.useViewTemplates.value
+    }
     public ChangeDevBorderSetting(showThem: boolean = true){
-        console.log(this.showDevBorders.value, showThem)
+       
         this.showDevBorders.value = showThem;
         const elements = document.querySelectorAll('[data-element]');
         elements.forEach((element) => {           

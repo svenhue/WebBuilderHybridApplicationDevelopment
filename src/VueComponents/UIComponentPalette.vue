@@ -336,7 +336,7 @@ function AnimateComponentDrag(){
 
     document.addEventListener('mouseup', () => {
         document.removeEventListener('mousemove', bindDragElementToMouse)
-        document.getElementById('dragElement111_123').remove()
+        document.getElementById('dragElement111_123')?.remove()
     })
 
 }

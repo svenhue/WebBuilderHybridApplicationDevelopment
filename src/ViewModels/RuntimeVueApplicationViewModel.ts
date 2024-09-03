@@ -140,7 +140,8 @@ export class RunTimeVueApplicationViewModel{
         return this.GetViews().filter(c => children.value.includes(c.id));
     }
     public createElement(type: string, values?){
-        return this.viewService.Create(type, values, undefined, this.settingsService.useViewTemplates.value, this.applicationConfiguration.name, undefined, this.GetViews());
+
+        return this.viewService.Create(type, values, undefined, this.settingsService.useViewTemplates.value, this.applicationConfiguration.name, false, this.GetViews());
     }
     addViewElement(type: string,  parentid: number, node: IViewConfiguration, useFactory: boolean = true){
 
@@ -179,6 +180,10 @@ export class RunTimeVueApplicationViewModel{
        
         let potentialElement;
         if(fixed == true){
+            console.log(e.target.id)
+            if(e.target?.id == 'fucussed-helper'){
+                console.log("helper")
+            }
             if(e.target.dataset.element != undefined){
                 
                 return this.focusView(parseInt(e.target.dataset.element.replace('element_', '')), true);

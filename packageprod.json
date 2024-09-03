@@ -48,9 +48,9 @@
     "dependencies": {
         "@typescript-eslint/eslint-plugin": "^6.7.2",
         "@typescript-eslint/parser": "^6.7.2",
-        "alphautils": "file:../Utils",
-        "alphaviewlibrary": "file:../ViewLibrary",
-        "cms": "file:../CMS",
+        "alphautils":  "https://github.com/svenhue/WebBuilderUtils.git",
+        "alphaviewlibrary": "https://github.com/svenhue/WebBuilderViewLibrary.git",
+        "cms": "https://github.com/svenhue/CMS.git",
         "eslint-plugin-vue": "^9.17.0",
         "file-saver": "^2.0.5",
         "inversify": "^6.0.2",
@@ -68,6 +68,6 @@
         "vue": "^3.3.4",
         "vue-codemirror": "^6.1.1",
         "vue-router": "^4.2.5",
-        "webcontainer": "file:../WebContainer"
+        "webcontainer": "https://github.com/svenhue/WebContainer.git"
     }
 }

@@ -24,9 +24,9 @@ const tree = service.GetTree();
 <style scoped lang="scss">
 
 .tree-path{
-    position:sticky;
+    position:absolute;
     bottom:0px;
-    left: 30px;
+    left: 50px;
     width: "min-content";
     z-index: 99999;
     .tree-step{

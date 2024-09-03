@@ -64,8 +64,9 @@ function ShowTemplateDialog(){
 }
 
 onMounted(() => {
-    
+    console.log(props.targetId)
     waitForElm('#' + props.targetId).then((el) => {
+        console.log(123, el)
         el.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         e.stopPropagation();

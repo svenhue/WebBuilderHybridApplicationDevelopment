@@ -1,14 +1,15 @@
 <template>
     <q-layout  :style="{
-        minHeight: '100px',
+        minHeight: '87px',
 
     }">
-        <q-header elevated :style="{zIndex: 999, position: 'absolute'}">
+        <q-header elevated :style="{zIndex: 999}">
             <q-toolbar>
                 <q-btn
                 flat
                 dense
                 round
+                
                 icon="menu"
                 aria-label="Menu"
                 @click="toggleLeftDrawer"
@@ -52,13 +53,7 @@
         />
       </q-list>
     </q-drawer>
-    <q-page-container>
-        <q-page :style="{}">  
-            <NuxtPage  :contextid="contextid" :keepalive="true"></NuxtPage>
-            
-        </q-page>
-   
-    </q-page-container>
+    
    
     </q-layout>
 </template>

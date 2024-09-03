@@ -9,29 +9,19 @@ import { reactive, onMounted } from 'vue';
 
 
 const style = reactive({
-   width: '1200px',
-   height: '100%'
+   width: '',
+   height: ''
 })
 
 function ChangeFacadeStyle(newStyle: object){
-    style.width = newStyle.width + 'px';
-    style.height = newStyle.height + 'px';
+    style.width = newStyle.width 
+    style.height = newStyle.height 
 }
 
 defineExpose({
     ChangeFacadeStyle
 })
 
-onMounted(() => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-
-    ChangeFacadeStyle({
-        left: '0px',
-        width: width -50 + 'px',
-        height: height -150+ 'px'
-    })
-})
 
 
 /*
@@ -56,11 +46,8 @@ onMounted(() => {
 .editor-background-facade{
     overflow:scroll;
     overflow-block: scroll;
-    position: 'absolute';
     background-color: $brightgrey;
- 
     min-width: 200px;
-    
     
     .background-facade{ 
 

@@ -29,18 +29,14 @@ export class ViewConfigurationService{
         this.factory.AddTemplates(viewtemplates.views)
     }
 
-    public Create(type: string, values: IViewConfiguration, parentId: number, useTemplate = false, appName?: string, isProduction? = false, views?: Array<IViewConfiguration>): IViewConfiguration | Array<IViewConfiguration>{
-        //todo exclude thos service from production environment
-        let result: IViewConfiguration | Array<IViewConfiguration>;
-    
-        if(useTemplate == true && isProduction != true){
-            result = this.CreateWithTemplate(type, values, parentId);
-        }else{
-            result = this.factory.Create(type, values, parentId);
-            console.log(result)
-        }
+    public Create(type: string, values: IViewConfiguration, parentId: number, useTemplateDeclarative, appName?: string, isProduction? = false, views?: Array<IViewConfiguration>): IViewConfiguration | Array<IViewConfiguration>{
         
-
+      
+      //todo exclude thos service from production environment
+        let result: IViewConfiguration | Array<IViewConfiguration>;
+      
+        result = this.factory.Create(type, values, parentId, useTemplateDeclarative);
+        
         if(isProduction == true){
             // prepare for production
         }else{
@@ -59,30 +55,7 @@ export class ViewConfigurationService{
         }
         return result;
     }
-    private CreateWithTemplate(type: string, values: IViewConfiguration, parentId: number): IViewConfiguration | Array<IViewConfiguration>{
-        
-        const template = this.FindTemplate(type);
-        if(template == undefined){
-            return this.factory.Create(type, values, parentId);
-        }
-        const result = this.factory.Create(type, values, parentId, template);
 
-        return result;
-    }
-
-    private AddDevBorders(node: IViewConfiguration){
-        if(node.style == undefined){
-            node.style = {}
-        }
-        
-        if(node.style['border'] == undefined){
-            node.style['border'] = '0.5px dashed black'
-        }
-    }
-    private FindTemplate(type: string): IViewConfiguration{
-        const specifictype = type.replace('viewdefinition:', '');
-        return this.factory.templates.find(t => t.type.includes(specifictype))
-    }
 
     private ConfigureEvents(views: Array<IViewConfiguration>, newviews: Array<IViewConfiguration>){
             //in viewtemplate, bindings between events, actions and viewElement are defined by the prop targetElement to the target with the prop templateIdentifier

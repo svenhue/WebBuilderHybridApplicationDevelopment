@@ -7,7 +7,7 @@
         class="application-screen-btn"
         dense
         icon="monitor"
-        @click="SetMaxScreen()"
+        @click="SetScreen(varProvider.GetVariable(props.contextid, 'defaultDesktopWidth'), varProvider.GetVariable(props.contextid, 'defaultDesktopHeight'))"
         >
 
         </q-btn>
@@ -49,6 +49,7 @@ const screen = serviceProvider.GetService<Screen>('Screen')
 const varProvider = BaseServiceProvider.ServiceWithContext<GlobalVariableDataProvider>('GlobalVariableDataProvider', props.contextid)
 
 function SetScreen(width: number, height: number){
+   
     screen.ChangeScreenSize(width, height)
 }
 function SetMaxScreen(){
