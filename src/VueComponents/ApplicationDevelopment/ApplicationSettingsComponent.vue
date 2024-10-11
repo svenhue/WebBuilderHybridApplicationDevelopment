@@ -73,7 +73,7 @@ defineEmits(['close'])
 
 const viewModel = inject('applicationViewModel') as RunTimeVueApplicationViewModel
 
-const appContext = viewModel.applicationConfiguration.contextid
+const appContext = viewModel.applicationConfiguration.value.contextid
 
 function updateApplicationCSS(css){
     //todo update prop and html dom

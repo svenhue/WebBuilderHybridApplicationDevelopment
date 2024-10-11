@@ -84,7 +84,6 @@ export class CodeEditorService {
       }
 
     public OpenEditorForExpression(host: Ref<HTMLElement>, contextid: number, value?: string, updatecallback?: void, requestingComponent?: IViewConfiguration){
-     
         monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
             noSemanticValidation: true,
             noSyntaxValidation: true

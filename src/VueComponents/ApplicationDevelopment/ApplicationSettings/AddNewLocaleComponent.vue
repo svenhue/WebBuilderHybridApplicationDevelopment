@@ -7,7 +7,7 @@
        
             <q-card v-show="show" :style="{zIndex: 9999}">
                 <q-card-section>
-                    <q-select  :style="{zIndex: 99999}" v-model="newLocale" label="Locale" :options="locales"></q-select>
+                    <q-select  :style="{zIndex: 99999}" v-model="newLocale" label="Locale" :options="viewModel.GetNotUsedLocales()"></q-select>
                 </q-card-section>
                 <q-card-actions>
                     <q-btn label="Cancel" :style="{color: 'black'}" @click="show = false"></q-btn>
@@ -21,6 +21,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { InternationalizationViewModel } from '../../../utils/Features/Internationalization/InternationalizationViewModel';
+
+const props = defineProps({
+    viewModel: {
+        required: true,
+        type: InternationalizationViewModel
+    }
+})
 
 
 const show = ref(false)
@@ -33,20 +41,7 @@ function addLocale() {
     show.value = false
 }
 
-const locales = [
-    {
-        label: 'English',
-        value: 'en'
-    },
-    {
-        label: 'Spanish',
-        value: 'es'
-    },
-    {
-        label: 'French',
-        value: 'fr'
-    }
-]
+
 
 </script>
 

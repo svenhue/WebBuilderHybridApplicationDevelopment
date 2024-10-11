@@ -12,10 +12,11 @@
         </LeftDevelopmentOptionsBar>
         <Teleport :to="'body'">
             <TreePathComponent
-        @focus-view="(id) => viewModel.focusView(id, true)">
-            
-        </TreePathComponent>
-            <DeploymentComponent>
+            @focus-view="(id) => viewModel.focusView(id, true)">
+                
+            </TreePathComponent>
+            <DeploymentComponent
+            :view-model="viewModel">
 
             </DeploymentComponent>
         </Teleport>
@@ -34,7 +35,7 @@
                     }"
                     @focusView="(view) => viewModel.focusView(view, true)"
                     @updateelement="(values) => viewModel.UpdateFocusedElement(values)"
-                    :contextid="viewModel.applicationConfiguration.contextid"
+                    :contextid="viewModel.applicationConfiguration.value.contextid"
                     :currentElement="viewModel.GetFocussedElement()">
                     </DevelopmentOptionsDrawer>
                 </q-drawer>
@@ -42,7 +43,7 @@
             <div
             class="component-wrapper"
             ref="componentWrapper"
-            :id="'developmentcomponent_' + viewModel.applicationConfiguration.contextid"
+            :id="'developmentcomponent_' + viewModel.applicationConfiguration.value.contextid"
             @mousemove="(e) => tryFocus(e, false)" 
             @mousedown="(e) => tryFocus(e, true)"
             >
@@ -50,7 +51,7 @@
 
             </ApplicationDevelopmentToolbar>
             <div class="app-container">
-            <BackgroundFacadeComponent class="appbase"ref="facade" v-if="viewModel.currentPage.value != -1"  id="development-container">
+            <BackgroundFacadeComponent :contextid="viewModel.applicationConfiguration.value.contextid" class="appbase"ref="facade" v-if="viewModel.currentPage.value != -1"  id="development-container">
                 <template #default>
                     <div :style="{
                         width: '100%',
@@ -91,7 +92,7 @@
         </div>
         
         <FocussedViewOptionsComponent
-        :app-name="viewModel.applicationConfiguration.name">
+        :app-name="viewModel.applicationConfiguration.value.name">
 
         </FocussedViewOptionsComponent>
 
@@ -103,7 +104,7 @@
         :targetId="'development-container'">
 
         </DevelopmentContextBarComponent>
-        <div :id="'developmentcomponent_container' + viewModel?.applicationConfiguration.name">
+        <div :id="'developmentcomponent_container' + viewModel?.applicationConfiguration.value.name">
 
         </div>
     </div>
@@ -125,6 +126,9 @@ import LeftDevelopmentOptionsBar from './LeftDevelopmentOptionsBar.vue';
 import DevelopmentContextBarComponent from './DevelopmentContextBarComponent.vue';
 import { ViewPositioningHelper } from '../utils/Helpers/ViewPositioningHelp';
 import DeploymentComponent from '../utils/Features/Deployment/VueComponent/DeploymentComponent.vue';
+import {useI18n } from 'vue-i18n';
+
+
 const showleftBar = ref(true)
 const optionsBar = ref(true)
 const facade = ref(null)
@@ -133,8 +137,8 @@ const route = useRoute()
 const XXX = ref<HTMLElement>(null)
 const solutionname = route.params.appName
 
-const viewModel = new RunTimeVueApplicationViewModel(solutionname, facade)
-
+const viewModel = new RunTimeVueApplicationViewModel(solutionname, facade, useI18n())
+console.log(useI18n().locale.value, useI18n().availableLocales)
 const positioningHelper = new ViewPositioningHelper(viewModel)
 
 let newElements = null
@@ -191,7 +195,6 @@ const height = computed(() => {
     if(el == undefined){
         return "80%"
     }
-        console.log(el.offsetHeight)
     return el.offsetHeight - 136 + 'px'
 })
 defineExpose({

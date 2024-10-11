@@ -1,5 +1,5 @@
 <template>
-        <q-card @focusout="$emit('close')">
+        <q-card >
 
             <q-card-section>
                 Edit Rule
@@ -23,10 +23,11 @@
             
             
             <TextInputEditorComponent
+            :requestingComponent="currentElement"
             :contextid="contextid"
             :label="'Rule'" 
             :value="rule.rule" 
-            @updateValue="(values) => $emit('updateElement', [{key: 'rule', value: values}])">
+            @updateValue="(values) => $emit('updateElement', {key: 'rule', value: values})">
         </TextInputEditorComponent>
         </q-card-section>
         </q-card>
@@ -34,6 +35,7 @@
 </template>
 
 <script setup lang="ts">
+import { IValueValidationViewConfiguration } from 'alphautils';
 import { TextInputEditorComponent } from 'alphaviewlibrary';
 
 
@@ -48,6 +50,10 @@ defineProps({
         type: Object,
         required: true
     },
+    currentElement:{
+        type: Object as  () => IValueValidationViewConfiguration,
+        required: true
+    }
 })
 
 

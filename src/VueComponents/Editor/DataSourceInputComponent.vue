@@ -27,7 +27,7 @@
         <div :style="{
             position: 'relative'
         }">
-        <Teleport  :to="'#XXX'" v-if="showEditor == true && (selectedSource == DataSources['Use Javascript'] || selectedSource == DataSources['Use Array'] || selectedSource == DataSources['Demo Data'])">
+        <Teleport  :to="'#XXX'" v-if="showEditor == true && (selectedSource == DataSources['Use Javascript'] || selectedSource == DataSources['Use Array'])">
             <JSCodeEditorComponent 
             :style="codeEditorStyle" 
             :contextid="contextid" 

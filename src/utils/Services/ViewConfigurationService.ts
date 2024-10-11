@@ -64,31 +64,33 @@ export class ViewConfigurationService{
               if(view.interaction == undefined){
                 continue;
               }
-              for(const event of view.interaction.events){
-                if(event.targetElement != undefined){
-                  const actualTargetPublicIdentifier = views.find(v => v.templateIdentifier == event.targetElement);
-        
-                  if(actualTargetPublicIdentifier == undefined){
-                    throw new Error('targetElement not found');
-                  }else if(actualTargetPublicIdentifier.publicidentifier == undefined){
-                    throw new Error('targetElement publicIdentifier not found');
-                  }
-                  event.targetElement = actualTargetPublicIdentifier.publicidentifier;
-        
-                  if(event.actions == undefined){
-                    continue;
-                  }
-        
-                  for(const action of event.actions){
-                    const actualTargetPublicIdentifier = views.find(v => v.templateIdentifier == action.targetElement);
-        
+              if(Array.isArray(view?.interaction?.events)){
+                for(const event of view?.interaction?.events){
+                  if(event.targetElement != undefined){
+                    const actualTargetPublicIdentifier = views.find(v => v.templateIdentifier == event.targetElement);
+          
                     if(actualTargetPublicIdentifier == undefined){
                       throw new Error('targetElement not found');
-                    }
-                    if(actualTargetPublicIdentifier.publicidentifier == undefined){
+                    }else if(actualTargetPublicIdentifier.publicidentifier == undefined){
                       throw new Error('targetElement publicIdentifier not found');
                     }
-                    action.targetElement = actualTargetPublicIdentifier.publicidentifier;
+                    event.targetElement = actualTargetPublicIdentifier.publicidentifier;
+          
+                    if(event.actions == undefined){
+                      continue;
+                    }
+          
+                    for(const action of event.actions){
+                      const actualTargetPublicIdentifier = views.find(v => v.templateIdentifier == action.targetElement);
+          
+                      if(actualTargetPublicIdentifier == undefined){
+                        throw new Error('targetElement not found');
+                      }
+                      if(actualTargetPublicIdentifier.publicidentifier == undefined){
+                        throw new Error('targetElement publicIdentifier not found');
+                      }
+                      action.targetElement = actualTargetPublicIdentifier.publicidentifier;
+                    }
                   }
                 }
               }

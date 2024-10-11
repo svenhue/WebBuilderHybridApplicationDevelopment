@@ -33,7 +33,8 @@ export class WebContainerService{
         
         this.api = api;
         this.env = env;
- 
+        
+        this.isReady.value = true
         return container;
     }
 

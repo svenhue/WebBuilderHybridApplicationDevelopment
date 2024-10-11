@@ -5,8 +5,15 @@
 </template>
 
 <script setup lang="ts">
+import { BaseServiceProvider } from 'alphautils';
+import { GlobalVariableDataProvider } from 'src/utils/Application/GlobalsVariableProvider/GlobalVariableDataProvider';
 import { reactive, onMounted } from 'vue';
 
+const props = defineProps({
+    contextid:{
+        required: true
+    }
+})
 
 const style = reactive({
    width: '',
@@ -20,6 +27,13 @@ function ChangeFacadeStyle(newStyle: object){
 
 defineExpose({
     ChangeFacadeStyle
+})
+
+onMounted(() => {
+    const serviceProvider = new BaseServiceProvider(props.contextid)
+    const varProvider = BaseServiceProvider.ServiceWithContext<GlobalVariableDataProvider>('GlobalVariableDataProvider', props.contextid)
+
+    ChangeFacadeStyle({width: varProvider.GetVariable(props.contextid, 'defaultDesktopWidth'), height: varProvider.GetVariable(props.contextid, 'defaultDesktopHeight')})
 })
 
 

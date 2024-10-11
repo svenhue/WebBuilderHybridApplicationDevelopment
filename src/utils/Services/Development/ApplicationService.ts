@@ -50,7 +50,6 @@ export class ApplicationService extends BaseServiceProvider{
     }
     public CreateApplicationContext(){
         const c = this.contextManager.NewContext(undefined, ContextLevel.Application);
-        console.log(c)
         return c.contextid;
     }
     public CreateNewApplication(config: IApplicationConfiguration){
@@ -93,27 +92,27 @@ export class ApplicationService extends BaseServiceProvider{
                 [
                     {
                         key:'defaultTabletWidth',
-                        value: '"768px"'
+                        value: '768px'
                     },
                     {
                         key:'defaultDesktopWidth',
-                        value: '"100%"'
+                        value: '100%'
                     },
                     {
                         key:'defaultMobileHeight',
-                        value: '"480px"'
+                        value: '480px'
                     },
                     {
                         key: 'defaultMobileWidth',
-                        value: '"250px"'
+                        value: '250px'
                     },
                     {
                         key:'defaultTabletHeight',
-                        value: '"481px"'
+                        value: '481px'
                     },
                     {
                         key:'defaultDesktopHeight',
-                        value: '"100%"'
+                        value: '100%'
                     }
             ])
         }
@@ -189,10 +188,15 @@ export class ApplicationService extends BaseServiceProvider{
     private ConfigureApplication(config: IApplicationConfiguration): IApplicationConfiguration{
         const rootView = this.createDefaultRootView(config);
 
-       
+        config.internationalization = {
+            defaultLocale: 'de-DE', //todo
+            locale: 'de-DE',
+            locales:[]
+        }
+        config.ssr = false
         config.components = [];
         config.mode = ApplicationModes.shadow;
-        config.deploymentMode = ApplicationDeploymentModes.spaclient;
+        config.deploymentMode = 'spaclient'; // use Enum, why doesnt work?
         config.pages = [
             {
                 name: 'Your Page',
@@ -200,7 +204,9 @@ export class ApplicationService extends BaseServiceProvider{
                     title: 'Your Page'
                 },
                 role: "Landingpage",
-                route: '/',
+                route: {
+                    path: '/'
+                },
                 views: [rootView],
             }
         ];

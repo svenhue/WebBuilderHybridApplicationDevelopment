@@ -1,5 +1,5 @@
 <template>
-    <q-icon size="45px" name="play_circle" color="white" class="preview-icon" @click="async () => await service.startPreview()">
+    <q-icon size="45px"  name="play_circle" color="white" class="preview-icon" @click="async () => await service.startPreview()">
         <q-tooltip>
             <div> Preview </div>
         </q-tooltip>

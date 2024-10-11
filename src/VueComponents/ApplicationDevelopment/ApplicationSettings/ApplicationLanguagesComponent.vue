@@ -1,9 +1,18 @@
 <template>
     <div>
         <div :style="{display: 'flex'}">
-            <AddNewLocaleComponent @addLocale="(v) => { viewModel.AddLanguageFileString({name: v.label, code: v.value, fileString: '', file: ''}), OpenLocaleString({name: v.label, code: v.value, fileString: '', file: ''}) }"></AddNewLocaleComponent>
+            <AddNewLocaleComponent 
+            :view-model="viewModel"
+            :style="{position: 'absolute'}"
+                @addLocale="(v) => 
+                    { viewModel.AddLanguageFileString({name: v.label, code: v.value, fileString: '', file: ''}), 
+                        OpenLocaleString({name: v.label, code: v.value, fileString: '', file: ''}),
+                        showButtons = true
+                    }"
+            >
+            </AddNewLocaleComponent>
         <q-tabs
-            
+            :style="{marginLeft: '20px'}"
             dense
             v-model="tab"
             
@@ -11,20 +20,22 @@
             >
                 <q-tab v-for="lang in viewModel.GetLocales()" 
                 clickable
-                @click="() => OpenLocaleString(viewModel.GetFileStringByCode(lang.code))"
+                @click="() => {OpenLocaleString(viewModel.GetFileStringByCode(lang.code)), showButtons=true}"
                 :name="lang.code"  
                 :label="lang.name"></q-tab>
         </q-tabs>
     </div>
         <div class="jsoneditor1" ref="refEditorX" >
             
-            
-            <q-btn v-show="tab != undefined" dense icon='close' @click="() => { CloseEditor()}">
+            <div  v-show="showButtons">
+                <q-btn dense icon='close' @click="() => { CloseEditor(), showButtons = false}">
 
-            </q-btn>
-            <q-btn v-show="tab != null" dense icon='check' @click="() => {SaveValue()}">
+                </q-btn>
+                <q-btn  dense icon='check' @click="() => {SaveValue(), CloseEditor(), showButtons = false}">
 
-            </q-btn>
+                </q-btn>
+            </div>
+
         </div>
     </div>
 </template>
@@ -51,7 +62,7 @@ const viewModel = inject('languageVM_' + props.contextid) as Internationalizatio
 const service = BaseServiceProvider.ServiceWithContext<ICodeEditorService>("CodeEditorService", 0) as ICodeEditorService
 const refEditorX = ref<HTMLElement | null>(null);
 let editor = null as monaco.editor.IStandaloneCodeEditor | null
-
+const showButtons = ref(false)
 
 function OpenLocaleString(locale: ILanguageFileString){
 
@@ -63,7 +74,6 @@ function OpenLocaleString(locale: ILanguageFileString){
         editor = null;
     }
     locale.fileString  = SetDefaultValue(locale.fileString)
-    console.log(123, locale)
     editor = service.OpenJSONEditor(refEditorX, props.contextid, locale.fileString)
 }
 
@@ -86,10 +96,8 @@ function SetDefaultValue(fileString: string){
     const fs = JSON.stringify(
         // provide your messages as key value pairs in the main object
         // in this example the message "key" would be translated to "value"
-        {
-            "main":{
-                "key": "value"
-            }
+        {    
+                "key": "value"  
         },
      null, 4)
 

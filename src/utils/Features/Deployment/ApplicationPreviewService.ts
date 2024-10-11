@@ -1,19 +1,18 @@
 
-import { WebContainerService } from "./WebContainerService";
+import { IApplicationConfiguration } from "alphautils";
+import { ApplicationBuildService } from "./ApplicationBuildService";
 
 
-export class ApplicationPreviewService extends WebContainerService{
+export class ApplicationPreviewService extends ApplicationBuildService{
 
 
     constructor(){
         super();
     }
 
-    public async startPreview(){
+    public async startPreview(config: IApplicationConfiguration){
         //todo nuxt errors
-        await this.boot();
-        
-        await this.Run()
+        await this.Build(config)
 
         
     }

@@ -25,6 +25,7 @@ import { getActivePinia } from 'pinia';
 import { InternationalizationViewModel } from '../utils/Features/Internationalization/InternationalizationViewModel';
 import { getCurrentInstance } from 'vue';
 import { ApplicationDevelopmentSettingsService } from '../VueComponents/ApplicationDevelopment/ApplicationSettings/ApplicationDevelopmentSettingsService';
+import {VueI18n } from 'vue-i18n';
 
 export class RunTimeVueApplicationViewModel{
     
@@ -42,11 +43,13 @@ export class RunTimeVueApplicationViewModel{
     styleService: StyleService
     private dataAdapterConstructor: interfaces.Newable<IDataAdapter>
     private settingsService: ApplicationDevelopmentSettingsService
+
+    public languageViewModel: InternationalizationViewModel
     customCss: Ref<string> = ref('');
 
     focusIsFixed = false;
     currentRoute: RouteRecordRaw
-    applicationConfiguration: IApplicationConfiguration;
+    applicationConfiguration: Ref<IApplicationConfiguration>;
     app: IApplication
     
     focussedViews: Ref<Array<number>> = ref([]);
@@ -57,7 +60,8 @@ export class RunTimeVueApplicationViewModel{
 
     constructor(
         solutionname: string,
-        facadeRef: typeof BackgroundFacadeComponent
+        facadeRef: typeof BackgroundFacadeComponent,
+        i18n: VueI18n
         ){
         this.FocussedViewService = this.UseService<FocussedViewContextService>('FocussedViewContextService');
         this.facadeRef = facadeRef;
@@ -67,14 +71,15 @@ export class RunTimeVueApplicationViewModel{
 
         const config = this.service.GetApplicationConfigByName(solutionname);
         //this.currentRoute = currentRoute;
-        this.applicationConfiguration = config;
-        
+      
+        this.applicationConfiguration = ref(config);
+       
         this.currentPage = ref();        
         this.pagesContextRef = ref([])
-        this.sessioncontextid = config.contextid;
+        this.sessioncontextid = this.applicationConfiguration.value.contextid;
         
 
-        this.InitializeApplicationContext(config)
+        this.InitializeApplicationContext(this.applicationConfiguration.value)
         this.serviceProvider = new BaseServiceProvider(config.contextid)
 
         this.WatchForScreenChanges();
@@ -85,27 +90,25 @@ export class RunTimeVueApplicationViewModel{
 
         this.dataAdapterConstructor = this.UseService<interfaces.Newable<IDataAdapter>>('DataAdapterConstructor');
         
-        provide('styleManager_' + this.applicationConfiguration.contextid, this.styleManager)
+        provide('styleManager_' + this.applicationConfiguration.value.contextid, this.styleManager)
         provide('applicationViewModel', this)
 
-        this.InitInternationalization();
+        this.InitInternationalization(i18n);
 
     }
-    public InitInternationalization(){
-        const vM = new InternationalizationViewModel(this.applicationConfiguration.contextid);
-
-        if(this.applicationConfiguration.internationalization != undefined){
-            if(this.applicationConfiguration.internationalization.locales != undefined){
-                for(const locale of this.applicationConfiguration.internationalization.locales){
+    public InitInternationalization(i18n){
+        const vM = new InternationalizationViewModel(i18n, this.applicationConfiguration.value);
+        this.languageViewModel = vM;
+        if(this.applicationConfiguration.value.internationalization != undefined){
+            if(this.applicationConfiguration.value.internationalization.locales != undefined){
+                for(const locale of this.applicationConfiguration.value.internationalization.locales){
                     vM.AddLanguageFileString(locale);
                 }
             }
         }
 
-        this.app.rootApp.provide('languageVM_' + this.applicationConfiguration.contextid, vM);
-        
-        //getCurrentInstance().appContext.app.provide('languageVM_' + this.applicationConfiguration.contextid, vM);
-        inject('languageVM_' + this.applicationConfiguration.contextid, vM);
+        this.app.rootApp.provide('languageVM_' + this.applicationConfiguration.value.contextid, vM);
+  
     }
 
     public NavigateToPage(name: string){
@@ -141,13 +144,12 @@ export class RunTimeVueApplicationViewModel{
     }
     public createElement(type: string, values?){
 
-        return this.viewService.Create(type, values, undefined, this.settingsService.useViewTemplates.value, this.applicationConfiguration.name, false, this.GetViews());
+        return this.viewService.Create(type, values, undefined, this.settingsService.useViewTemplates.value, this.applicationConfiguration.value.name, false, this.GetViews());
     }
     addViewElement(type: string,  parentid: number, node: IViewConfiguration, useFactory: boolean = true){
 
-        console.log(this.settingsService.useViewTemplates.value)
         if(useFactory){
-            node = this.viewService.Create(type, node, parentid, this.settingsService.useViewTemplates.value, this.applicationConfiguration.name, undefined, this.GetViews());
+            node = this.viewService.Create(type, node, parentid, this.settingsService.useViewTemplates.value, this.applicationConfiguration.value.name, undefined, this.GetViews());
         }
         if(Array.isArray(node)){
             for(const n in node){
@@ -166,8 +168,7 @@ export class RunTimeVueApplicationViewModel{
     }   
     addViewElementbyDrop(e: Event, type: string, values?: IViewConfiguration){
 
-        console.log(this.settingsService.useViewTemplates.value)
-        const potentialElement = this.viewService.Create(type, values, undefined, this.settingsService.useViewTemplates.value, this.applicationConfiguration.name, undefined, this.GetViews());
+        const potentialElement = this.viewService.Create(type, values, undefined, this.settingsService.useViewTemplates.value, this.applicationConfiguration.value.name, undefined, this.GetViews());
         
         if(!Array.isArray(potentialElement)){
             this.positioningHelper.CreateShadowViewAndStartPositioning(e, [potentialElement], this);
@@ -180,9 +181,7 @@ export class RunTimeVueApplicationViewModel{
        
         let potentialElement;
         if(fixed == true){
-            console.log(e.target.id)
             if(e.target?.id == 'fucussed-helper'){
-                console.log("helper")
             }
             if(e.target.dataset.element != undefined){
                 
@@ -281,17 +280,20 @@ export class RunTimeVueApplicationViewModel{
     }
     /* #region private Hilfsmethoden */
     private PrepareConfiguration(){
-        this.applicationConfiguration.components = []
-        for(const view of this.GetViews()){
-            if(view.type == this.applicationConfiguration.rootComponent.type){
-                continue;
-            }
-            this.applicationConfiguration.components.push(view)    
+        
+
+        this.applicationConfiguration.value.pages = [];
+    
+        for(const pageVM of this.pages){
+            pageVM.PreparePageConfig();
+            this.applicationConfiguration.value.pages.push(pageVM.page.value)    
         }
+
+        this.languageViewModel.PrepareConfig(this.applicationConfiguration.value)
     }
     public GetConfiguration(){
         this.PrepareConfiguration();
-        return this.applicationConfiguration;
+        return this.applicationConfiguration.value;
     }
     public GetFocussedElement(){
         return computed(() => {
@@ -324,7 +326,6 @@ export class RunTimeVueApplicationViewModel{
         this.facadeRef.value.ChangeFacadeStyle({width: width, height: height});
     }
     private InitializePages(pages: Array<IPageConfiguration>){
-        
         for(const page of pages){
             const pageViewModel = new ApplicationPageViewModel(page, this.UseService<interfaces.Newable<IDataAdapter>>('DataAdapterConstructor'), this.viewService, this.app.container);
             this.pagesContextRef.value.push(pageViewModel.contextid);
@@ -335,16 +336,18 @@ export class RunTimeVueApplicationViewModel{
     private InitializeApplicationContext(config: IApplicationConfiguration){
         const app = this.CreateShadowApplication(config);
         this.app = app
-        if(this.applicationConfiguration.deploymentMode == ApplicationDeploymentModes.spaclient){
-            this.InitializeSpaClient(this.applicationConfiguration)
+        if(this.applicationConfiguration.value.deploymentMode == ApplicationDeploymentModes.spaclient){
+            this.InitializeSpaClient(this.applicationConfiguration.value)
+        }else{
+            this.InitializePages(config.pages)
         }
-
-        const landingPage = this.pages.find(p => p.role.value == 'Landingpage');
+        
+        const landingPage = this.GetPageEntitys().value.find(p => p.role == 'Landingpage');
         if(landingPage == undefined){
             throw new Error('No landing page found')
         }
-        this.customCss.value = this.applicationConfiguration.stylesheets?.css ?? ''
-        this.NavigateToPage(landingPage.page.value.name);
+        this.customCss.value = this.applicationConfiguration.value.stylesheets?.css ?? ''
+        this.NavigateToPage(landingPage.name);
 
     }
     public GetPageEntitys(){
@@ -470,8 +473,8 @@ export class RunTimeVueApplicationViewModel{
             if(this.FocussedViewService.contextid != this.currentPage.value){
                 const deleteHandler  = (id: number) => this.DeleteElement(id);
                 const updateHandler = (id: number, view: IViewConfiguration) => this.updateElement(id, view);
-                this.FocussedViewService.SetDeleteHandler(this.applicationConfiguration.contextid, deleteHandler);
-                this.FocussedViewService.SetUpdateHandler(this.applicationConfiguration.contextid, updateHandler);
+                this.FocussedViewService.SetDeleteHandler(this.applicationConfiguration.value.contextid, deleteHandler);
+                this.FocussedViewService.SetUpdateHandler(this.applicationConfiguration.value.contextid, updateHandler);
                 this.FocussedViewService.SetFocussedView(this.GetViews().find(c => c.id == id));
                 this.FocussedViewService.SetGetter(() => this.GetViews());
             }else{
@@ -528,7 +531,7 @@ export class RunTimeVueApplicationViewModel{
         if(this.applicationConfiguration == undefined){
             return BaseServiceProvider.Service<T>(name)
         }
-        return BaseServiceProvider.ServiceWithAppContext<T>(name, this.applicationConfiguration.contextid)?.service;
+        return BaseServiceProvider.ServiceWithAppContext<T>(name, this.applicationConfiguration.value.contextid)?.service;
     }
     /* #endregion */
     

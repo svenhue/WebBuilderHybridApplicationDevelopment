@@ -1,47 +1,82 @@
+import { ApplicationDeploymentModes, IApplicationConfiguration } from "alphautils";
 import { Dir } from "./IDirsAndFiles";
 import { WebContainerService } from "./WebContainerService";
 import FileSaver from 'file-saver';
 import JSZip, { file } from 'jszip';
+import { IInternationalization } from "alphautils/src/Application/Localization/IInternationalization";
+import { i } from "vite/dist/node/types.d-FdqQ54oU";
+import { LocalesFileBuilder } from "../Internationalization/LocalesFileBuilder";
+import { ILanguageFileString } from "../Internationalization/ILanguageFileString";
 
 export class ApplicationBuildService extends WebContainerService{
 
     private readonly _buildOutputDirectory: string = './.output';
-    
-    public async Build(prerender: boolean = true){
+    private readonly _appConfigDirectory: string = './AppConfigs/'
+
+    public async Download(config: IApplicationConfiguration, files: Array<ILanguageFileString>){
+        if(this.isReady.value != true && config == undefined){
+            throw new Error("Container isnt ready")
+        }else{
+            await this.Build(config, files, Load)
+        }
+
+        async function Load(self: ApplicationBuildService){
+            const result = await self.GetBuildDirectory()
+            
+            const zip = await self.CreateZip(result)
+            await zip.generateAsync({ type: 'blob', compression: "STORE" }).then(function (content) {
+                FileSaver.saveAs(content, 'download.zip');
+            });
+        }
+            
+
+    }
+    public async DownloadProject(config: IApplicationConfiguration, files: Array<ILanguageFileString>){
+        if(this.isReady.value != true && config == undefined){
+            throw new Error("Container isnt ready")
+        }else{
+            await this.Build(config, files, Load)
+        }
+
+        async function Load(self: ApplicationBuildService){
+            const result = await self.GetRootDirectory()
+            
+            const zip = await self.CreateZip(result)
+            await zip.generateAsync({ type: 'blob', compression: "STORE" }).then(function (content) {
+                FileSaver.saveAs(content, 'download.zip');
+            });
+        }
+            
+
+    }
+    public async Build(config: IApplicationConfiguration, files: Array<ILanguageFileString>, callback: (self: ApplicationBuildService) => Promise<void>){
         
-       
-        let result = null;
-        await this.boot();
-        
+        if(this.isReady.value == false){
+            await this.boot();
+        }
        
         await this.env.RunCommand(this.api.containerInstance, 'npm', ['run', 'generatePages'], true)
 
         //spa/ mpa or static pages/ ssr?
         const command = ['run']
-
-        if(prerender == true){
+       
+        //todo use enum
+        if(config.deploymentMode == 'staticSites' || (config.deploymentMode == 'spaclient' && config.ssr == false)){
             command.push('generate')
         }else{
             command.push('build')
         }
+        await this.DoPreBuildRoutine(config, files)
+
 
         await this.env.RunCommand(this.api.containerInstance, 'npm', command, true, "You can preview", async () => { // you can deploy XX for generate
             
             await this.DoPostBuildRoutine()
 
-            result = await this.GetBuildDirectory()
-            
-            const zip = await this.CreateZip(result)
-            const t = this;
-            
-            const r = await zip.generateAsync({ type: 'blob', compression: "STORE" }).then(function (content) {
-                FileSaver.saveAs(content, 'download.zip');
-            });
-
+            await callback(this)
         }
         );
-
-        
+        return;
     }
 
     private async CreateZip(dirx: Dir){
@@ -127,6 +162,12 @@ export class ApplicationBuildService extends WebContainerService{
         return result;
         
     }
+    private async DoPreBuildRoutine(config: IApplicationConfiguration, files: Array<ILanguageFileString>){
+        await this.CreateAppConfigFile(config)
+        await new LocalesFileBuilder(this).Configure(config.internationalization, files)
+    }
+
+
     //this routine is a workaroung for two know bugs
     private async DoPostBuildRoutine(){
 
@@ -172,4 +213,11 @@ export class ApplicationBuildService extends WebContainerService{
         }
     }
 
+    //this file is essential for the generated application
+    private async CreateAppConfigFile(config: IApplicationConfiguration){
+        //  we create the new file with the new config
+        await this.api.containerInstance.fs.writeFile(this._appConfigDirectory + 'pages.ts', 'export const config = ' + JSON.stringify(config))
+    }
+
+    
 }                      

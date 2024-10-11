@@ -58,15 +58,12 @@ function deleteView(){
 
 function ShowTemplateDialog(){
     showTemplateDialog.value = true
-    console.log(createTemplateDialogComponent.value)
     createTemplateDialogComponent.value.setView(props.element)
     
 }
 
 onMounted(() => {
-    console.log(props.targetId)
     waitForElm('#' + props.targetId).then((el) => {
-        console.log(123, el)
         el.addEventListener('contextmenu', (e) => {
         e.preventDefault();
         e.stopPropagation();

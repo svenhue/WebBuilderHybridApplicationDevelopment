@@ -23,7 +23,9 @@
 
             </q-item>
         </q-list>
-        <EditValidationRuleComponent v-if="showEditor"  @close="showEditor = false" 
+        <EditValidationRuleComponent 
+        v-if="showEditor"  @close="showEditor = false" 
+        :current-element="currentElement"
         @update-element="handleUpdate"
         :contextid="currentElement.contextid" :rule="model">
 
@@ -37,7 +39,7 @@
 import { IValueValidationViewConfiguration } from 'alphautils'
 import { computed, ref, toValue } from 'vue';
 import EditValidationRuleComponent from './EditValidationRuleComponent.vue';
-
+import { v4 as uiid } from 'uuid'
 
 const props = defineProps({
     currentElement:{
@@ -49,84 +51,42 @@ const props = defineProps({
 const emits = defineEmits(['updateElement'])
 
 const showEditor = ref(false)
-const model = ref({})
-const oldRuleValue = ref({})
+const model = computed(() => {
+    return props.currentElement.properties.rules.find(r => r.uuid == fuuid.value)
+})
+const fuuid = ref('')
+
 const listRef = ref(null)
 const rules = computed(() => {
-    return props.currentElement?.properties?.rules
+     if(Array.isArray(props.currentElement?.properties?.rules)) return props.currentElement.properties.rules
+
+     return []
 })
 
 function addRule(){
-    emits('updateElement', [{key: 'properties.rules', value: [...toValue(rules.value), {rule: '', name: '', errorMessage: ''}]}])
+    const x = uiid()
+    emits('updateElement', [{key: 'properties.rules', value: [...toValue(rules.value) , {rule: '', name: '', errorMessage: '', uuid: x }]}])
+    fuuid.value = x
 }
 function handleUpdate(update: object){
-    console.log(update)
-    if( update.key =='rule'){
-        updateElement(update.value, update.rule)
-    }else if(update.key == 'name'){
-        updateName(update.value, update.rule)
-    }else if(update.key == 'errorMessage'){
-        updateErrorMessage(update.value, update.rule)
-    }
-     }
+    let rules = toValue(props.currentElement.properties.rules);
+
+    const i = rules.findIndex(r => r.uuid == model.value.uuid)
+
+    rules[i][update.key] = update.value
+    console.log(update, rules)
+    emits('updateElement', [{key: 'properties.rules', value: rules}])
+
+}
     
-
-function updateElement(rule){
-    const oldElement = rules.value.findIndex((r) => r.name == oldRuleValue.value.name && r.rule == oldRuleValue.value.rule)
-
-    const copy = JSON.parse(JSON.stringify(toValue(rules.value))) as Array<object>
-        
-    copy.splice(oldElement, 1, {rule: rule, name: oldRuleValue.value.name, errorMessage: oldRuleValue.value.updateErrorMessage} )
-    emits('updateElement', [{key: 'properties.rules', value: copy}])
-
-    model.value.rule = rule
-    oldRuleValue.value.rule = rule
-}
-function updateErrorMessage(val){
-    const oldElement = rules.value.findIndex((r) => r.name == oldRuleValue.value.name && r.rule == oldRuleValue.value.rule)
-
-    if(oldElement == -1) {
-        throw new Error('Element not found')
-    }
-
-    const copy = JSON.parse(JSON.stringify(toValue(rules.value))) as Array<object>
-        
-    copy.splice(oldElement, 1, {rule: oldRuleValue.value.rule, name: oldRuleValue.value.name, errorMessage: val} )
-    emits('updateElement', [{key: 'properties.rules', value: copy}])
-    model.value.errorMessage = val
-    oldRuleValue.value.errorMessage = val
-
-}
 function openEditor(value){
-    oldRuleValue.value = JSON.parse(JSON.stringify(value))
+    fuuid.value = value.uuid
     showEditor.value = true
-    model.value = JSON.parse(JSON.stringify(value))
+    
 }
-function updateName(val){
-    const oldElement = rules.value.findIndex((r) => r.name == oldRuleValue.value.name && r.rule == oldRuleValue.value.rule)
 
-    if(oldElement == -1) {
-        throw new Error('Element not found')
-    }
-
-    const copy = JSON.parse(JSON.stringify(toValue(rules.value))) as Array<object>
-        
-    copy.splice(oldElement, 1, {rule: oldRuleValue.value.rule, name: val, errorMessage: oldRuleValue.value.errorMessage} )
-    emits('updateElement', [{key: 'properties.rules', value: copy}])
-    model.value.name = val
-    oldRuleValue.value.name = val
+function deleteRule(rule: object){
+    emits('updateElement', [{key: 'properties.rules', value: toValue(rules).filter(r => r.uuid != rule.uuid)}])
 }
-function deleteRule(value){
-    const copy = JSON.parse(JSON.stringify(toValue(rules.value))) as Array<object>
-    const index = rules.value.findIndex((r) => r == value)
 
-    if(index == -1) {
-        throw new Error('Element not found')
-    }
-    copy.splice(index, 1)
-    emits('updateElement', [{key: 'properties.rules', value: copy}])
-    showEditor.value = false
-    model.value = {}
-    oldRuleValue.value = {}
-}
 </script>

@@ -5,6 +5,7 @@ import { Ref, ref } from "vue";
 import { interfaces } from "inversify";
 import { ViewConfigurationService } from "../utils/Services/ViewConfigurationService";
 import { set } from "lodash-es";
+import { PageConfigurationHelper } from "../utils/Services/Development/PageConfigurationHelper";
 
 //@injectable()
 export class ApplicationPageViewModel{
@@ -21,6 +22,7 @@ export class ApplicationPageViewModel{
     })
     private viewservice: ViewConfigurationService
     private viewDataAdapter: DataAdapter
+    
 
     constructor(
         page: IPageConfiguration,
@@ -60,6 +62,7 @@ export class ApplicationPageViewModel{
     }
     public AddView(view: IViewConfiguration){
         const newView = this.viewDataAdapter.Create(view, this.contextid)
+        console.log(newView)
         this.views.value.push(newView) 
         return newView;
     }
@@ -104,5 +107,15 @@ export class ApplicationPageViewModel{
             set(this.page.value, pair.key, pair.value)
         }
         this.dataAdapter.UpdatePartial(this.page.value.id, new SimpleNameValueCollection(values), this.contextid)
+    }
+    public PreparePageConfig(){
+        
+        this.page.value.views = [];
+
+        for(const view of this.views.value){
+            this.page.value.views.push(view)
+        }
+
+        PageConfigurationHelper.validatePage(this.page.value)
     }
 }

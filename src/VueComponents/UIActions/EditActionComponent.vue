@@ -77,6 +77,16 @@
 
             </q-select>
         </div>
+        <div>
+       
+        </div>
+
+        <Teleport to="#jfiopqehf73408956234" v-if="actionCopy?.methodName != undefined">
+            <EditCustomMethodComponent
+            :action="actionCopy">
+
+            </EditCustomMethodComponent>
+        </Teleport>
   </div>
 </div>
 </template>
@@ -87,6 +97,7 @@ import { BaseServiceProvider } from 'alphautils';
 import { ViewDefinition } from '../../utils/Models/ViewDefinition';
 import { ref } from 'vue';
 import { interfaces } from 'inversify';
+import EditCustomMethodComponent from './EditCustomMethodComponent.vue';
 
 
 const props = defineProps({
@@ -128,7 +139,7 @@ function GetComponentMethods(){
     if(component == null){
        return []
     }  
-    return ViewDefinition.GetDefinitionByTypeAndName(component.type, 'ComponentMethods')?.map(v => {return { label: v, value: v} })
+    return ViewDefinition.GetDefinitionByTypeAndName(component.type, 'ComponentMethods')?.map(v => {return { label: v.name, value: v.name} })
 }
 
 function GetComponents(){
