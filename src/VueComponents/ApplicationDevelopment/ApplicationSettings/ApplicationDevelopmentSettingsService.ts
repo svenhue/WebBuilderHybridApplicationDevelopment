@@ -1,22 +1,26 @@
-import { Ref, ref } from "vue";
+import { Ref } from "vue";
 import { injectable } from "inversify";
-import { IViewConfiguration, waitForElm } from "alphautils";
+import { IViewConfiguration, useApplicationStore, waitForElm } from "alphautils";
 
 @injectable()
-export class ApplicationDevelopmentSettingsService{
+class ApplicationDevelopmentSettingsService{
 
     public showDevBorders: Ref<boolean> 
     public useViewTemplates: Ref<boolean>
+    public developmentMode: Ref<string>
+    public store = useApplicationStore()
 
     constructor(){
-        this.showDevBorders = ref(true);
-        this.useViewTemplates = ref(true);
+        
+        this.store.devSettings.showDevBorders = true;
+        this.store.devSettings.useViewTemplates = true;
+        this.store.devSettings.developmentMode = 'disableHinderingEvents';
     }
 
 
     public OnNewElement(view: IViewConfiguration){        
         waitForElm('[data-element="element_' + view.id + '"]').then((el) => {
-            this.SetElementDevBorder(el, this.showDevBorders.value);
+            this.SetElementDevBorder(el,  this.store.devSettings.showDevBorders);
         })
     }
 
@@ -27,16 +31,21 @@ export class ApplicationDevelopmentSettingsService{
             element.style.border =  element.style.border + '0.5px dashed black'
         }
     }
+    public ChangeDevelopmentMode(mode: string){
+        this.store.devSettings.developmentMode = mode;
+    }
 
     public ChangeTemplateSetting(){
-        this.useViewTemplates.value != this.useViewTemplates.value
+        this.store.devSettings.useViewTemplate != this.store.devSettings.useViewTemplates
     }
     public ChangeDevBorderSetting(showThem: boolean = true){
        
-        this.showDevBorders.value = showThem;
+        this.store.devSettings.showDevBorders = showThem;
         const elements = document.querySelectorAll('[data-element]');
         elements.forEach((element) => {           
             this.SetElementDevBorder(element as HTMLElement, showThem);
         })
     }
 }
+
+export { ApplicationDevelopmentSettingsService }

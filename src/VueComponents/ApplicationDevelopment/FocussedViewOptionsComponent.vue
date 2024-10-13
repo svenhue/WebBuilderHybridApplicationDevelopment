@@ -123,7 +123,7 @@ function SetPosition(view: IViewConfiguration, hovered = false){
         const clientRect = target.getBoundingClientRect();
         style.left = clientRect.left + 'px';
         //todo: fix this
-        style.top = clientRect.top - 80 + 'px';
+        style.top = clientRect.top - 45 + 'px';
     })
 }
 

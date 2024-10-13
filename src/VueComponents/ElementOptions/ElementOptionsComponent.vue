@@ -1,7 +1,7 @@
 <template>
     <div v-if="viewCopy?.id != undefined">
         <div>
-            <q-expansion-item dense label="Content">
+            <q-expansion-item dense label="Content" v-if="optionsComponent != undefined">
                 <component :is="optionsComponent" @updateElement="(values) => emits('updateElement', values)" :currentElement="viewCopy"></component>
             </q-expansion-item>
             <q-expansion-item dense label="Appearence" v-if="appearenceComponent != undefined ">
@@ -70,6 +70,12 @@ import HeaderComponentContent from './Content/Layout/HeaderComponentContent.vue'
 import TextInputEditorComponent from 'alphaviewlibrary/src/Editor/TextInputEditorComponent.vue';
 import ButtonAppearenceComponent from './Content/Button/ButtonAppearenceComponent.vue';
 import LinkOptionsComponent from './Content/Link/LinkOptionsComponent.vue';
+import AvatarComponent from 'alphaviewlibrary/src/Basic/AvatarComponent.vue';
+import AvatarContentComponent from './Content/Avatar/AvatarContentComponent.vue';
+import DialogBehaviorComponent from './Content/Dialog/DialogBehaviorComponent.vue';
+import BadgeContentComponent from './Content/Badge/BadgeContentComponent.vue';
+import TabbedContainerContentComponent from './Content/TabbedContainer/TabbedContainerContentComponent.vue';
+import TabbedContainerAppereanceComponent from './Content/TabbedContainer/TabbedContainerAppereanceComponent.vue';
 
 const emits = defineEmits(['updateElement'])
 
@@ -83,6 +89,10 @@ let editor = null;
 let viewCopy = ref<IViewConfiguration>()
 
 const components = [
+    {
+        type: "TabbedContainerComponent",
+        component: TabbedContainerContentComponent
+    },
     {
         type: 'FormComponent',
         component: FormContentComponent
@@ -134,6 +144,14 @@ const components = [
     {
         type: "LinkComponent",
         component: LinkOptionsComponent
+    },
+    {
+        type: "AvatarComponent",
+        component: AvatarContentComponent
+    },
+    {
+        type:"BadgeComponent",
+        component: BadgeContentComponent
     }
 ]
 
@@ -156,6 +174,10 @@ const behaviorComponents= [
     {
         type: 'CarouselComponent',
         component: CarouselBehaviorComponent
+    },
+    {
+        type: 'DialogComponent',
+        component: DialogBehaviorComponent
     }
 ]
 
@@ -168,6 +190,10 @@ const appearenceComponents = [
     {
         type: 'ButtonComponent',
         component: ButtonAppearenceComponent
+    },
+    {
+        type: 'TabbedContainerComponent',
+        component: TabbedContainerAppereanceComponent
     }
 ]
 

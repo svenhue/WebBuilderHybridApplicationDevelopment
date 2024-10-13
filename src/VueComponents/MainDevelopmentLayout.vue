@@ -37,7 +37,7 @@ function deleteFocussedView(){
     overflow: clip;
     
     .mdl-drawer{
-        margin-top:100px;
+       
         z-index: 100;
     }
     .layout-placeholder{
@@ -46,7 +46,7 @@ function deleteFocussedView(){
     #development-container{
         width: 100%;
      
-        margin-left: 42px;
+       
         overflow: clip;
     }
 }

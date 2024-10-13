@@ -15,10 +15,6 @@
     
     standout
     :style="{
-            position: 'absolute',
-            top: '4px',
-            left: 0,
-            right: 0,
             margin: 'auto',
             width: '600px'
         }"
@@ -36,6 +32,7 @@
 <script setup lang="ts">
 import { CommandPaletteViewModel } from '../ViewModels/CommandPaletteViewModel';
 import { ref, watch } from 'vue';
+
 const viewModel = new CommandPaletteViewModel();
 const X = ref(['tt'])
 

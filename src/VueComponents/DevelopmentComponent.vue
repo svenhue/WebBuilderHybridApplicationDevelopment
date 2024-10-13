@@ -15,10 +15,6 @@
             @focus-view="(id) => viewModel.focusView(id, true)">
                 
             </TreePathComponent>
-            <DeploymentComponent
-            :view-model="viewModel">
-
-            </DeploymentComponent>
         </Teleport>
         <div
      
@@ -47,7 +43,7 @@
             @mousemove="(e) => tryFocus(e, false)" 
             @mousedown="(e) => tryFocus(e, true)"
             >
-            <ApplicationDevelopmentToolbar :contextid="viewModel.currentPage.value" :route="useRoute()">
+            <ApplicationDevelopmentToolbar  :view-model="viewModel" :contextid="viewModel.currentPage.value" :route="useRoute()">
 
             </ApplicationDevelopmentToolbar>
             <div class="app-container">
@@ -125,7 +121,6 @@ import BackgroundFacadeComponent from './ApplicationDevelopment/BackgroundFacade
 import LeftDevelopmentOptionsBar from './LeftDevelopmentOptionsBar.vue';
 import DevelopmentContextBarComponent from './DevelopmentContextBarComponent.vue';
 import { ViewPositioningHelper } from '../utils/Helpers/ViewPositioningHelp';
-import DeploymentComponent from '../utils/Features/Deployment/VueComponent/DeploymentComponent.vue';
 import {useI18n } from 'vue-i18n';
 
 
@@ -208,28 +203,28 @@ defineExpose({
 <style scoped lang="scss">
 .development-root-component{
    
-    position: absolute;
+    position: relative;
     width: 100%;
     height: 100%;
+    
     display:flex;
     
     .component-navigation-wrapper{
         width: 100%;
         height: 100%;
-        
-        
+        position: relative;
+        text-align:center;
         .component-wrapper{
             position: relative;
             width: 100%;
             height: 100%;
-          
+            margin-top: 10px;
             justify-content: center;
-        }
-        .app-container{
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            position: absolute;
+            .app-container{
+            
+           
+            margin:auto;
+            position: relative;
             width:80%;
             height:v-bind(height);
            
@@ -242,6 +237,8 @@ defineExpose({
             
         }
         }
+        }
+        
         
     }
 

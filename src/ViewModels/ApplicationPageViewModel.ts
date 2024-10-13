@@ -62,7 +62,7 @@ export class ApplicationPageViewModel{
     }
     public AddView(view: IViewConfiguration){
         const newView = this.viewDataAdapter.Create(view, this.contextid)
-        console.log(newView)
+      
         this.views.value.push(newView) 
         return newView;
     }

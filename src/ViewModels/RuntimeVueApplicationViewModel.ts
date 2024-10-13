@@ -92,7 +92,7 @@ export class RunTimeVueApplicationViewModel{
         
         provide('styleManager_' + this.applicationConfiguration.value.contextid, this.styleManager)
         provide('applicationViewModel', this)
-
+        provide('devMode', this.settingsService.store.devSettings.developmentMode)
         this.InitInternationalization(i18n);
 
     }
@@ -144,12 +144,12 @@ export class RunTimeVueApplicationViewModel{
     }
     public createElement(type: string, values?){
 
-        return this.viewService.Create(type, values, undefined, this.settingsService.useViewTemplates.value, this.applicationConfiguration.value.name, false, this.GetViews());
+        return this.viewService.Create(type, values, undefined, this.settingsService.store.devSettings.useViewTemplates.value, this.applicationConfiguration.value.name, false, this.GetViews());
     }
     addViewElement(type: string,  parentid: number, node: IViewConfiguration, useFactory: boolean = true){
 
         if(useFactory){
-            node = this.viewService.Create(type, node, parentid, this.settingsService.useViewTemplates.value, this.applicationConfiguration.value.name, undefined, this.GetViews());
+            node = this.viewService.Create(type, node, parentid, this.settingsService.store.devSettings.useViewTemplates.value, this.applicationConfiguration.value.name, undefined, this.GetViews());
         }
         if(Array.isArray(node)){
             for(const n in node){
@@ -168,7 +168,7 @@ export class RunTimeVueApplicationViewModel{
     }   
     addViewElementbyDrop(e: Event, type: string, values?: IViewConfiguration){
 
-        const potentialElement = this.viewService.Create(type, values, undefined, this.settingsService.useViewTemplates.value, this.applicationConfiguration.value.name, undefined, this.GetViews());
+        const potentialElement = this.viewService.Create(type, values, undefined, this.settingsService.store.devSettings.useViewTemplates.value, this.applicationConfiguration.value.name, undefined, this.GetViews());
         
         if(!Array.isArray(potentialElement)){
             this.positioningHelper.CreateShadowViewAndStartPositioning(e, [potentialElement], this);

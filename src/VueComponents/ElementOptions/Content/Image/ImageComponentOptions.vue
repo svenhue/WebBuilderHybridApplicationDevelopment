@@ -35,6 +35,4 @@ function updateImageSrc(val){
 
 }
 
-console.log(props.currentElement)
-
 </script>

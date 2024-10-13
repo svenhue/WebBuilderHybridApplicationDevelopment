@@ -1,6 +1,6 @@
 <template>
     <div class="left-development-options-bar">
-        <q-list dense :style="{width: '40px'}" > 
+        <q-list dense :style="{width: '40px', height: '1000px'}" > 
             <q-item  class="ldob-content-btn" dense>
                 <q-btn dense icon="add_circle_outline" @click="(e) => update(e, 'palette')">
 

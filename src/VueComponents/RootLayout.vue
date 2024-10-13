@@ -1,10 +1,7 @@
 <template>
-    <q-layout  :style="{
-        minHeight: '87px',
 
-    }">
-        <q-header elevated :style="{zIndex: 999}">
-            <q-toolbar>
+        <div class="app-header" elevated :style="{zIndex: 999, display:'flex', alignItems: 'center'}">
+            <q-toolbar  >
                 <q-btn
                 flat
                 dense
@@ -14,57 +11,21 @@
                 aria-label="Menu"
                 @click="toggleLeftDrawer"
                 />
+                <div id="dev-toolbar" :style="{zIndex: 99999, width: '100%', display:'flex', color: 'black' }">
 
-                <q-toolbar-title> Web Builder 0.1 </q-toolbar-title>
-            </q-toolbar>
-
-            <div :style="{zIndex:'99999', backgroundColor: 'white', color: 'black' }">
-                    <q-tabs dense :model-value="tabService.ActiveTab.value.title"  align="left" active-color="primary"
-                    
-                 
-                    indicator-color="primary"          
-                narrow-indicator>
-                        <q-tab
-
-                        v-for="tab in tabService.GetTabs().value" :key="tab.title"
-                        clickable
-                        :name="tab.title"
-                        :label="tab.title"
-                        />
-                    </q-tabs>
                 </div>
 
-        <CommandPaletteSearchBarComponent
-        >
+            </q-toolbar>
+        </div>     
 
-        </CommandPaletteSearchBarComponent>
-        </q-header>
-       
-        
-    <q-drawer class="main-drawer" v-model="leftDrawerOpen" bordered overlay>
-      <q-list>
-        <q-item-label header> Essential Links </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        
-        />
-      </q-list>
-    </q-drawer>
-    
-   
-    </q-layout>
 </template>
 
 
 <script setup lang="ts">
 import { BaseServiceProvider, TabService } from 'alphautils';
 import '../css/app.scss'
-import { ref } from 'vue';
+import {  ref } from 'vue';
 import EssentialLink from './EssentialLink.vue';
-import CommandPaletteSearchBarComponent from '../utils/CommandPalette/VueComponents/CommandPaletteSearchBarComponent.vue';
 
 let tabService: TabService;
 
@@ -74,6 +35,7 @@ const props = defineProps({
         required:true
     }
 })
+
 
 
 if(typeof process == 'undefined'){
@@ -117,4 +79,25 @@ const essentialLinks = [
         to: '/marketplace'
     }
 ]
+/*
+                    <q-tabs dense :model-value="tabService.ActiveTab.value.title"  align="left" active-color="primary"
+                    
+                 
+                    indicator-color="primary"          
+                narrow-indicator>
+                        <q-tab
+
+                        v-for="tab in tabService.GetTabs().value" :key="tab.title"
+                        clickable
+                        :name="tab.title"
+                        :label="tab.title"
+                        />
+                    </q-tabs>
+*/
 </script>
+
+<style scoped lang="scss">
+.main-drawer{
+    position: fixed;
+}
+</style>

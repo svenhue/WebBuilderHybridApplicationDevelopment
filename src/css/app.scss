@@ -6,6 +6,11 @@
   overflow: hidden;
   height: 100%;
   background-color: orange;
+
+   
+}
+.app-header{
+  background-color: $primary;
 }
 .left-toolbar {
   background-color: green;
@@ -113,4 +118,8 @@
 }
 .active-container {
   background-color: $darkgrey;
+}
+
+.disable-hindering-events {
+  
 }
