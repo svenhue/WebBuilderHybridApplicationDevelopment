@@ -36,7 +36,7 @@ export class ViewElementFactory {
         node = deepcopy(node, JSON.parse(JSON.stringify(this.viewdefinitions.find((t) => t.type == type))));
       }
     }
-    
+
     if(template == true && node.skipTemplate != true){
       if(type != undefined){
         const specifictype = type.replace('viewdefinition:', '');
@@ -46,7 +46,7 @@ export class ViewElementFactory {
         }
       }
     }
-  
+
     if (node?.specifications?.atomic == true) {
         node.htmlattributes['data-atomic'] = true;
     }
@@ -68,7 +68,6 @@ export class ViewElementFactory {
     node.htmlattributes['data-element'] = 'element_' + node.id;
     node.parentId = parentId;
     
-
     if (node.children != undefined) {
       let newNode = {} as IViewConfiguration;
       for (const child of node.children.filter(c => c.type != 'childrenCollection' && c.type != 'childrenCollection:templatePlaceholder')) {

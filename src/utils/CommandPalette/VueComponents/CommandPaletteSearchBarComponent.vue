@@ -15,7 +15,7 @@
     
     standout
     :style="{
-            margin: 'auto',
+           
             width: '600px'
         }"
     >

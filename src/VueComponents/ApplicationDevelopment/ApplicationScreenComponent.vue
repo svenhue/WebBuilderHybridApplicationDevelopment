@@ -1,9 +1,6 @@
 <template>
-    <div :style="{display: 'inline-flex'}">
-        
-        <q-btn
-      
-        
+    <div :style="{display: 'flex'}">  
+        <q-btn  
         class="application-screen-btn"
         dense
         icon="monitor"
@@ -61,6 +58,7 @@ function SetMaxScreen(){
 
 <style scoped lang="scss">
 .application-screen-btn{
+    width:40px;
     
 }
 </style>

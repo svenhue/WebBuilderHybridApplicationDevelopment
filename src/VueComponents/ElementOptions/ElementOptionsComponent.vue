@@ -76,6 +76,7 @@ import DialogBehaviorComponent from './Content/Dialog/DialogBehaviorComponent.vu
 import BadgeContentComponent from './Content/Badge/BadgeContentComponent.vue';
 import TabbedContainerContentComponent from './Content/TabbedContainer/TabbedContainerContentComponent.vue';
 import TabbedContainerAppereanceComponent from './Content/TabbedContainer/TabbedContainerAppereanceComponent.vue';
+import DropdownMenuContentComponent from './Content/DropdownMenu/DropdownMenuContentComponent.vue';
 
 const emits = defineEmits(['updateElement'])
 
@@ -89,6 +90,10 @@ let editor = null;
 let viewCopy = ref<IViewConfiguration>()
 
 const components = [
+    {
+        type: 'DropdownMenuComponent',
+        component: DropdownMenuContentComponent
+    },
     {
         type: "TabbedContainerComponent",
         component: TabbedContainerContentComponent

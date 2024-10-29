@@ -1,9 +1,7 @@
 <template>
     <div :style="{     
             borderRadius: '5px',
-            zIndex: 999999999,      
-            height: '40px',
-            width: '300px',
+            zIndex: 99999,      
             display: 'flex'   
         }"
     >

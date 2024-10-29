@@ -233,6 +233,32 @@ export class ViewPositioningHelper{
         }
         return undefined;
     }
+    public static FindNextViewElement(e: MouseEvent){
+        
+        let potentialElement = null;
+        if(e.target.dataset.element != undefined){
+                
+            return e.target
+        }
+        else if(e.target.parentElement?.dataset.element != undefined){
+            return e.target.parentElement
+        }else{
+
+            potentialElement = e.target?.closest('[data-element]');
+            if(potentialElement != undefined){
+                return potentialElement;
+            }
+            potentialElement = e.target?.querySelector('[data-element]');
+            if(potentialElement != undefined){
+                return potentialElement;
+            }
+
+            
+        }
+        return undefined;
+    }
+
+   
     private GetHostView(views: Array<IViewConfiguration>){
         let lowest = Number.POSITIVE_INFINITY;
         let highest = Number.NEGATIVE_INFINITY;

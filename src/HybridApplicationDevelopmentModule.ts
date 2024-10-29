@@ -10,7 +10,6 @@ import { GridDesignerServive } from './utils/Services/Designer/GridDesignerServi
 import { FocussedViewContextService } from './utils/Services/Designer/FocussedViewContextService';
 import { ApplicationService } from './utils/Services/Development/ApplicationService';
 import { CommandPaletteService } from './utils/CommandPalette/Services/CommandPaletteService';
-import { ViewPositioningHelper } from './utils/Helpers/ViewPositioningHelper';
 import { IApplicationModule } from 'alphautils';
 import { MediaResourceManager } from './utils/Services/Resources/MediaResourceManager';
 import { CodeCompletionProvider } from './VueComponents/Editor/CodeEditor/CodeCompletionProvider';
@@ -20,6 +19,7 @@ import { ViewChangedAgendsProvider } from './utils/Agents/DesignerAgents/ViewCha
 import { Pinia } from 'pinia';
 import { AuthenticationMechanism } from 'alphautils';
 import { ApplicationDevelopmentSettingsService } from './VueComponents/ApplicationDevelopment/ApplicationSettings/ApplicationDevelopmentSettingsService';
+import { EditModeFeature } from './utils/Features/EditMode/EditModeFeature';
 export class HybridAppDevelopmentApplicationModule extends ApplicationModule implements IApplicationModule
 {
   
@@ -48,7 +48,6 @@ export class HybridAppDevelopmentApplicationModule extends ApplicationModule imp
           bind<ApplicationService>("ApplicationService").to(ApplicationService).inSingletonScope();
 
           bind<CommandPaletteService>("CommandPaletteService").to(CommandPaletteService).inSingletonScope();
-          bind<ViewPositioningHelper>("ViewPositioningHelperConstructor").toConstructor(ViewPositioningHelper);	
 
           bind<CodeCompletionProvider>("CodeCompletionProvider").to(CodeCompletionProvider).inSingletonScope();
 
@@ -59,6 +58,8 @@ export class HybridAppDevelopmentApplicationModule extends ApplicationModule imp
           bind<ViewChangedAgendsProvider>("ViewChangedAgendsProvider").to(ViewChangedAgendsProvider).inSingletonScope();
 
           bind<ApplicationDevelopmentSettingsService>("ApplicationDevelopmentSettingsService").to(ApplicationDevelopmentSettingsService).inSingletonScope();
+
+          bind<EditModeFeature>("EditModeFeature").to(EditModeFeature).inSingletonScope();
         }
     )
     container.load(module);

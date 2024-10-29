@@ -3,7 +3,7 @@
     :style="{
       width: '100%',
       border: '1px solid black',
-      height: '100%',
+      height: '100%'
     }"
     v-model="splitterModel"
     horizontal
@@ -33,6 +33,7 @@
         <q-tab-panel name="settings"> 
 
           <ElementOptionsComponent
+          :style="{width: '100%', height: 'max-content'}"
           ref="optionsComponent"
           :view="currentElement"
           @updateElement="(values) =>emits('updateelement', values) ">

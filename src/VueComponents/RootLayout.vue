@@ -11,7 +11,7 @@
                 aria-label="Menu"
                 @click="toggleLeftDrawer"
                 />
-                <div id="dev-toolbar" :style="{zIndex: 99999, width: '100%', display:'flex', color: 'black' }">
+                <div id="dev-toolbar">
 
                 </div>
 

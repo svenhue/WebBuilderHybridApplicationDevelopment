@@ -29,6 +29,10 @@ export class ViewConfigurationService{
         this.factory.AddTemplates(viewtemplates.views)
     }
 
+    public static getAvaibleComponentTypes(): Array<string>{
+        return viewdefinitions.views.map(v => v.type);
+    }
+
     public Create(type: string, values: IViewConfiguration, parentId: number, useTemplateDeclarative, appName?: string, isProduction? = false, views?: Array<IViewConfiguration>): IViewConfiguration | Array<IViewConfiguration>{
         
       
@@ -100,6 +104,6 @@ export class ViewConfigurationService{
               }
             }
             
-          }
+    }
     
 }

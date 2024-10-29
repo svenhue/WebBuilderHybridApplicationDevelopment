@@ -12,7 +12,7 @@ import { ApplicationService } from '../Services/Development/ApplicationService';
 import { BaseServiceProvider } from 'alphautils';
 import { StyleManagerViewModel } from './StyleManagerViewModel';
 import BackgroundFacadeComponent from '../VueComponents/ApplicationDevelopment/BackgroundFacadeComponent.vue';
-import { ViewPositioningHelper } from 'src/utils/Helpers/ViewPositioningHelp';
+
 import { getCurrentInstance, Ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { DefaultRuntimeApplicationStartup } from '../utils/Application/Startups/DefaultRuntimeApplicationStartup';
@@ -42,7 +42,7 @@ export class RunTimeVueApplicationViewModel{
     private pagesContextRef: Ref<Array<number>> = ref([]);
     styleService: StyleService
     private dataAdapterConstructor: interfaces.Newable<IDataAdapter>
-    private settingsService: ApplicationDevelopmentSettingsService
+    public settingsService: ApplicationDevelopmentSettingsService
 
     public languageViewModel: InternationalizationViewModel
     customCss: Ref<string> = ref('');
@@ -144,12 +144,13 @@ export class RunTimeVueApplicationViewModel{
     }
     public createElement(type: string, values?){
 
-        return this.viewService.Create(type, values, undefined, this.settingsService.store.devSettings.useViewTemplates.value, this.applicationConfiguration.value.name, false, this.GetViews());
+        const result =  this.viewService.Create(type, values, undefined, this.settingsService.store.devSettings.useViewTemplates, this.applicationConfiguration.value.name, false, this.GetViews());
+        return result;
     }
     addViewElement(type: string,  parentid: number, node: IViewConfiguration, useFactory: boolean = true){
 
         if(useFactory){
-            node = this.viewService.Create(type, node, parentid, this.settingsService.store.devSettings.useViewTemplates.value, this.applicationConfiguration.value.name, undefined, this.GetViews());
+            node = this.viewService.Create(type, node, parentid, this.settingsService.store.devSettings.useViewTemplates, this.applicationConfiguration.value.name, undefined, this.GetViews());
         }
         if(Array.isArray(node)){
             for(const n in node){
@@ -498,7 +499,11 @@ export class RunTimeVueApplicationViewModel{
     }
     public DeleteElement(id: number){
         const page = this.pages.find(p => p.contextid == this.currentPage.value);
+        const node = this.GetViews().find(c => c.id == id); 
+        console.log("delete", node)
+        this.RemoveNodeFromParentChildren(node)
         page.DeleteView(id);
+        
     }
       
     private createPublicIdentifier(view: IViewElement): string{

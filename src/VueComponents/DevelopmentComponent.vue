@@ -40,8 +40,8 @@
             class="component-wrapper"
             ref="componentWrapper"
             :id="'developmentcomponent_' + viewModel.applicationConfiguration.value.contextid"
-            @mousemove="(e) => tryFocus(e, false)" 
-            @mousedown="(e) => tryFocus(e, true)"
+            @mousemove="(e) => {return viewModel.settingsService.store.devSettings?.editorMode == EditorModes.design ? tryFocus(e, false) : null }" 
+            @mousedown="(e) => {return viewModel.settingsService?.store.devSettings?.editorMode == EditorModes.design ? tryFocus(e, true) : null }"
             >
             <ApplicationDevelopmentToolbar  :view-model="viewModel" :contextid="viewModel.currentPage.value" :route="useRoute()">
 
@@ -122,6 +122,7 @@ import LeftDevelopmentOptionsBar from './LeftDevelopmentOptionsBar.vue';
 import DevelopmentContextBarComponent from './DevelopmentContextBarComponent.vue';
 import { ViewPositioningHelper } from '../utils/Helpers/ViewPositioningHelp';
 import {useI18n } from 'vue-i18n';
+import { EditorModes } from './ApplicationDevelopment/ApplicationSettings/Enums/EditorModes';
 
 
 const showleftBar = ref(true)
@@ -133,7 +134,7 @@ const XXX = ref<HTMLElement>(null)
 const solutionname = route.params.appName
 
 const viewModel = new RunTimeVueApplicationViewModel(solutionname, facade, useI18n())
-console.log(useI18n().locale.value, useI18n().availableLocales)
+
 const positioningHelper = new ViewPositioningHelper(viewModel)
 
 let newElements = null
